@@ -10,6 +10,14 @@ const addSeriesFunctions = {
     histogram: "addHistogramSeries",
 };
 
+const addSeriesOptionsFunctions = {
+    candlestick: "addCandlestickSeriesOption",
+    line: "addLineSeriesOption",
+    area: "addAreaSeriesOption",
+    bar: "addBarSeriesOption",
+    histogram: "addHistogramSeriesOption",
+};
+
 const colors = [
     "#008FFB",
     "#00E396",
@@ -136,12 +144,19 @@ class ChartWrapper extends React.Component {
 
     addSeries = (serie, type) => {
         const func = addSeriesFunctions[type];
+        const func_option = addSeriesOptionsFunctions[type];
+        let _options = (func_option && serie[func_option]) || serie.options
+        // console.log('************               type             *****************')
+        // console.log(type)
+        // console.log(serie)
+        // console.log(func_option)
+        // console.log(_options)
         let color =
-            (serie.options && serie.options.color) ||
+            (_options && _options.color) ||
             colors[this.series.length % colors.length];
         const series = this.chart[func]({
             color,
-            ...serie.options,
+            ..._options,
         });
         let data = this.handleLinearInterpolation(
             serie.data,
